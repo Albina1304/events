@@ -1,0 +1,186 @@
+﻿@model ContextManager
+@{
+    var ev = ViewBag.Event;
+    string schooladdess = ViewBag.SchoolAddress;
+    var reviews = (List<EventReview>)ViewBag.EventReviews;
+
+    string GetStars(int value)
+    {
+        switch (value)
+        {
+            case 1:
+                return "★";
+            case 2:
+                return "★★";
+            case 3:
+                return "★★★";
+            case 4:
+                return "★★★★";
+            case 5:
+                return "★★★★★";
+            default:
+                return "Don't have evaluation";
+        }
+    }
+}
+
+@if (Model.CurrentUser.RoleId == 2 && ev.SchoolId == ViewBag.SchoolId)
+{
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <div class="modal-background" id="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="width: 95%; margin: 0 auto">
+        <a class="hobert cursor-pointer" onclick="openModalEditEvent({ url: '/Activities/EditActivity', eventid: '@ev.Id' });">Редактировать</a>
+    </div>
+}
+<div class="ev-info mrtop-16" style="background-image: url('/eventphoto/@ev.Photo');">
+    <div class="ev-back-button">
+        <div class="d-flex alignitems-center cursor-pointer" onclick="RedirectTo('/Home/Index')">
+            <img src="~/reference/Vector (Stroke).png" alt="back" class="mrright-8">
+            <a class="color-white">Back</a>
+        </div>
+    </div>
+    <div class="d-flex juscon-spacebetween alignitems-center ev-info-media-d-block" style="position: absolute; bottom: 0; margin-bottom: 16px; width: 94%; justify-content: space-between;">
+        <div class="ev-name cursor-default" title="@ev.Name - @ViewBag.SchoolName - @ev.Description">
+            <p id="eventname" class="color-white fontsize-32 mrtop-16">@ev.Name</p>
+            <a id="schoolname" href="/Schools/School?schoolid=@ev.SchoolId" class="d-inline-block color-white fontsize-24 mrtop-16">@ViewBag.SchoolName</a>
+            <p class="color-white fontsize-16 mrtop-16">@ev.Description</p>
+            <div class="d-flex alignitems-center mrtop-16 cursor-pointer" onclick="RedirectToMap('@ev.Id')">
+                <img src="/reference/MapPin.png" alt="map" class="mrright-8 cursor-pointer">
+                <p class="color-white fontsize-16 cursor-pointer">Посмотреть карту</p>
+            </div>
+        </div>
+        <div class="ev-datetime">
+            @if (Model.CurrentUser != null && Model.CurrentUser.RoleId == 1)
+            {
+                <div class="ev-datetime-back">
+                    @if (ViewBag.IsExpired == false)
+                    {
+                        if (ViewBag.AlreadyRegistered == false)
+                        {
+                            <p class="color-black fontsize-20 fweight-bold cursor-default">Дата & Время</p>
+                            <p class="color-7E7E7E fontsize-16 mrtop-16 cursor-default">@ev.DateTime.AddHours(3).ToUniversalTime().ToString("dddd, d MMMM, HH:mm")</p>
+                            <p class="color-7848F4 fontsize-16 mrtop-16 cursor-pointer">Осталось мест: @ev.Capacity</p>
+                            <input type="button" value="Забронировать" class="evbutton mrtop-16 cursor-pointer" id="myBtn" onclick="RegToEvent('@Model.CurrentUser.Id', '@ev.Id')">
+                        }
+                        else
+                        {
+                            <p class="color-black fontsize-20 fweight-bold cursor-default">Дата & Время</p>
+                            <p class="color-7E7E7E fontsize-16 mrtop-16 cursor-default">@ev.DateTime.AddHours(3).ToUniversalTime().ToString("dddd, d MMMM, HH:mm")</p>
+                            <p class="color-black fontsize-16 fweight-bold cursor-default mrtop-16">Вы уже зарегистрированы</p>
+                        }
+                    }
+                    else
+                    {
+                        <p class="color-black fontsize-16 fweight-bold cursor-default">Мероприятие уже прошло!<br>@ev.DateTime.AddHours(3).ToUniversalTime().ToString("dddd, d MMMM, HH:mm")</p>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="d-flex ev-about cursor-default ev-media-d-block">
+    <div class="ev-leftbar">
+        <div class="ev-desc">
+            <p class="fontsize-24 fweight-bold">Описание</p>
+            <p class="fontsize-16 color-7E7E7E mrtop-16">
+                @ev.Description
+            </p>
+            <p class="fontsize-16 color-7E7E7E mrtop-16">
+                Тип мероприятия: @Model.ConvertEvTypeToStr(ev.EventType)
+            </p>
+            @if (ev.IsModified == true)
+            {
+                <p class="fontsize-16 color-7E7E7E mrtop-16">
+                    (Обратите внимание, название, описание, дата и время или тип мероприятия были отредактированы!)
+                </p>
+            }
+        </div>
+        <div class="ev-contact">
+            <p class="fontsize-24 fweight-bold">Контактное лицо организатора</p>
+            <p class="fontsize-16 color-7E7E7E mrtop-16"> Пожалуйста, обратитесь по адресу электронной почты организатора мероприятия <a href="mailto:@ViewBag.SchoolEmail" class="color-7848F4">@ViewBag.SchoolEmail</a> и узнайте всю необходимую информацию.</p>
+        </div>
+        @if (reviews.Count > 0)
+        {
+            <div class="ev-reviews">
+                <p class="fontsize-24 fweight-bold">Отзывы</p>
+                @foreach (var review in reviews)
+                {
+                    var user = Model.Users.First(q => q.Id == review.UserId);
+                    <p class="fontsize-16 color-7E7E7E mrtop-16">@(user.LastName + " " + user.FirstName + " " + user.MiddleName) - @GetStars(review.Evaluation)</p>
+                    <p class="fontsize-16 color-7E7E7E">@review.Description</p>
+                }
+            </div>
+        }
+    </div>
+    <div class="ev-rightbar">
+        <div class="ev-location">
+            <p class="fontsize-24 fweight-bold">Место проведения</p>
+            <p id="address" class="fontsize-16 color-7E7E7E mrtop-16">@schooladdess</p>
+            <div id="map" class="mrtop-16" style="width: 100%; height: 400px"></div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        initMap();
+    });
+
+    async function initMap() {
+        var address = document.getElementById("address").innerHTML;
+        
+        // Функция ymaps.ready() будет вызвана, когда
+        // загрузятся все компоненты API, а также когда будет готово DOM-дерево.
+        ymaps.ready(init);
+
+        function init() {
+            // Создание карты.
+            // https://tech.yandex.ru/maps/doc/jsapi/2.1/dg/concepts/map-docpage/
+            
+
+            // Ищем координаты указанного адреса
+            // https://tech.yandex.ru/maps/doc/jsapi/2.1/ref/reference/geocode-docpage/
+            var geocoder = ymaps.geocode(address);
+
+            // После того, как поиск вернул результат, вызывается callback-функция
+            geocoder.then(
+                function (res) {
+
+                    // координаты объекта
+                    var coordinates = res.geoObjects.get(0).geometry.getCoordinates();
+
+                    var myMap = new ymaps.Map("map", {
+                        // Координаты центра карты.
+                        // Порядок по умолчнию: «широта, долгота».
+                        center: res.geoObjects.get(0).geometry.getCoordinates(),
+                        zoom: 10,
+                        controls: [
+                            'fullscreenControl' // Полноэкранный режим
+                        ]
+                    });
+
+                    // Добавление метки (Placemark) на карту
+                    var placemark = new ymaps.Placemark(
+                        coordinates, {
+                        'hintContent': document.getElementById("schoolname").innerHTML,
+                        'balloonContent': address + " - " + document.getElementById("eventname").innerHTML
+                    }, {
+                        'preset': 'islands#redDotIcon'
+                    }
+                    );
+
+                    myMap.geoObjects.add(placemark);
+                }
+            );
+        }
+    }
+</script>

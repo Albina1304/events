@@ -1,0 +1,82 @@
+﻿@model ContextManager
+@{
+    var ev = ViewBag.SchoolPreviousEvents;
+    var evup = ViewBag.SchoolUpcomingEvents;
+    int maxDescriptionLength = 80;
+}
+
+@if (Model.CurrentUser != null && Model.CurrentUser.Id == ViewBag.School.UserId)
+{
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <div class="modal-background" id="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex" style="width: 95%; margin: 0 auto; margin-bottom: 8px; justify-content:start">
+        <p class="cursor-pointer mrright-16 hobert" onclick="openModalCreateEvent({ url: '/Activities/CreateActivity', schoolid: '@ViewBag.School.Id' });">Добавить мероприятие</p>
+        <a href="/Profile/Index" class="hobert">Изменить</a>
+    </div>
+}
+
+<div class="sch-photo">
+    <img src="~/schoolphoto/@ViewBag.School.Photo" alt="@ViewBag.School.Name" title="@ViewBag.School.Name">
+</div>
+
+<div class="sch-desc cursor-default">
+    <p class="fontsize-24 fweight-bold">@ViewBag.School.Name</p>
+    <p class="fontsize-16 mrtop-16">Местоположение: @ViewBag.SchoolAddress</p>
+    <p class="fontsize-16 mrtop-16">
+        @ViewBag.School.Description
+    </p>
+
+    @if (ev.Length != 0)
+    {
+        <p class="fontsize-24 fweight-bold mrtop-24">Мероприятия</p>
+        <div class="m-cards mrtop-16" style="margin: 0 auto !important; margin-top: 16px !important;">
+            @for (int i = 0; i < ev.Length; i++)
+            {
+                string description = ev[i].Description;
+
+                if (description.Length > maxDescriptionLength)
+                {
+                    description = description.Substring(0, maxDescriptionLength) + "...";
+                }
+
+                <div class="oneofcard cursor-pointer hover-box-shadow" onclick="RedirectTo('/Activities/Activity?activityid=@ev[i].Id')">
+                    <img src="/eventphoto/@ev[i].Photo" alt="@ev[i].Name" width="100%" class="mrbottom-8">
+                    <a href="/Activities/Activity?activityid=@ev[i].Id" class="fontsize-16 fweight-bold">@ev[i].Name</a>
+                    <p class="fontsize-14 fweight-bold mrtop-8">@description</p>
+                    <p class="fontsize-14 mrtop-8" style="color: #7848F4;">@ev[i].DateTime.ToString("dddd, d MMMM, HH:mm")</p>
+                </div>
+            }
+        </div>
+    }
+    @if (evup.Length != 0)
+    {
+        <p class="fontsize-24 fweight-bold mrtop-24">Прошедшие мероприятия</p>
+        <div class="m-cards mrtop-16" style="margin: 0 auto !important; margin-top: 16px !important;">
+            @for (int i = 0; i < evup.Length; i++)
+            {
+                string description = evup[i].Description;
+
+                if (description.Length > maxDescriptionLength)
+                {
+                    description = description.Substring(0, maxDescriptionLength) + "...";
+                }
+
+                <div class="oneofcard cursor-default">
+                    <img src="/eventphoto/@evup[i].Photo" alt="@evup[i].Name" width="100%" class="mrbottom-8">
+                    <a class="fontsize-16 fweight-bold">@evup[i].Name</a>
+                    <p class="fontsize-14 fweight-bold mrtop-8">@description</p>
+                    <p class="fontsize-14 mrtop-8" style="color: #7848F4;">@evup[i].DateTime.ToString("dddd, d MMMM, HH:mm")</p>
+                </div>
+            }
+        </div>
+    }
+</div>

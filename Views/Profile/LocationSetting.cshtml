@@ -1,0 +1,81 @@
+﻿@model ContextManager
+@{
+    School school = ViewBag.School;
+    var citiesGrouped = Model.Cities.OrderBy(q => q.RegionId).GroupBy(c => c.RegionId);
+}
+
+@if (Model.CurrentUser == null)
+{
+    <span>Пользователь не авторизован!</span>
+}
+else
+{
+    <div class="pr-item">
+        <div id="displaysettings">
+            <div class="d-flex w-100 alignitems-center">
+                <p class="mrright-16 w-30 fweight-bold">Субъект РФ</p>
+                <p class="w-70">@ViewBag.Region</p>
+            </div>
+
+            <div class="d-flex w-100 alignitems-center mrtop-16">
+                <p class="mrright-16 w-30 fweight-bold">Город</p>
+                <p class="w-70">@ViewBag.City</p>
+            </div>
+
+            <div class="d-flex w-100 alignitems-center mrtop-16">
+                <p class="mrright-16 w-30 fweight-bold">Улица</p>
+                <p class="w-70">@school.Street</p>
+            </div>
+
+            <div class="d-flex w-100 alignitems-center mrtop-16">
+                <p class="mrright-16 w-30 fweight-bold">Дом</p>
+                <p class="w-70">@school.House</p>
+            </div>
+
+            <a class="d-block cursor-pointer pr-button btnhobert mrtop-16" onclick="switchBetweenEditing('displaysettings', 'editsettings');">Редактировать информацию о школе</a>
+        </div>
+        <div id="editsettings">
+            <div class="d-flex alignitems-center" onclick="switchBetweenEditing('editsettings', 'displaysettings');">
+                <img src="/reference/Vector (Stroke) color.png" class="mrright-8" />
+                <a class="cursor-pointer color-7848F4">Вернуться к предпросмотру</a>
+            </div>
+            <form class="mrtop-16">
+                <div class="d-flex w-100 alignitems-center">
+                    <p class="mrright-16 w-30">Город</p>
+
+                    <select id="city" name="city" class="settinginput">
+                        @foreach (var group in citiesGrouped)
+                        {
+                            var regionName = Model.Regions.Single(r => r.Id == group.Key).Name;
+                            <optgroup label="@regionName">
+                                @foreach (var city in group)
+                                {
+                                    if(school.CityId == city.Id)
+                                    {
+                                        <option value="@city.Id" selected>@city.Name</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@city.Id">@city.Name</option>
+                                    }
+                                }
+                            </optgroup>
+                        }
+                    </select>
+                </div>
+
+                <div class="d-flex w-100 alignitems-center mrtop-16">
+                    <p class="mrright-16 w-30">Улица</p>
+                    <input class="settinginput" id="street" type="text" value="@school.Street"/>
+                </div>
+
+                <div class="d-flex w-100 alignitems-center mrtop-16">
+                    <p class="mrright-16 w-30">Дом</p>
+                    <input class="settinginput" id="house" type="text" maxlength="4" value="@school.House" />
+                </div>
+
+                <input type="button" class="settingbutton mrtop-16 btnhobert" value="Сохранить" onclick="saveSchoolLocation('@school.Id', this.form.city.value, this.form.street.value, this.form.house.value)" />
+            </form>
+        </div>
+    </div>
+}

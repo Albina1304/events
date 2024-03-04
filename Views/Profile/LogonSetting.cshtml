@@ -1,0 +1,50 @@
+﻿@model ContextManager
+@{
+    
+}
+
+@if (Model.CurrentUser == null)
+{
+    <span>Пользователь не авторизован!</span>
+}
+else
+{
+    <form class="pr-item">
+        <div id="displaysettings">
+            <div class="d-flex w-100">
+                <p class="mrright-16 w-30 fweight-bold">Адрес электронной почты</p>
+                <p class="w-70">@Model.CurrentUser.Email</p>
+            </div>
+
+            <div class="d-flex w-100 mrtop-16">
+                <p class="mrright-16 w-30 fweight-bold">Дата создания аккаунта</p>
+                <p class="w-70">@Model.CurrentUser.CreateionDate.ToLongDateString()</p>
+            </div>
+
+            <div class="d-flex w-100 mrtop-16">
+                <p class="mrright-16 w-30 fweight-bold">Роль</p>
+                <p class="w-70">@ViewBag.RoleName</p>
+            </div>
+            <a class="d-block cursor-pointer pr-button btnhobert mrtop-16" onclick="switchBetweenEditing('displaysettings', 'editsettings');">Редактировать пароль</a>
+        </div>
+        <div id="editsettings">
+            <div class="d-flex alignitems-center" onclick="switchBetweenEditing('editsettings', 'displaysettings');">
+                <img src="/reference/Vector (Stroke) color.png" class="mrright-8"/>
+                <a class="cursor-pointer color-7848F4">Вернуться к предпросмотру</a>
+            </div>
+           
+
+            <div class="d-flex w-100 alignitems-center mrtop-16">
+                <p class="mrright-16 w-30">Новый пароль</p>
+                <input class="settinginput" id="password" type="password" />
+            </div>
+
+            <div class="d-flex w-100 alignitems-center mrtop-16">
+                <p class="mrright-16 w-30">Подтверждение пароля</p>
+                <input class="settinginput" id="reppassword" type="password" />
+            </div>
+
+            <input type="button" class="settingbutton mrtop-16 btnhobert" value="Сохранить" onclick="UpdateLogonSetting('@Model.CurrentUser.Id', this.form.password.value, this.form.reppassword.value)" />
+        </div>
+    </form>
+}

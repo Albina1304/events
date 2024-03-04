@@ -1,0 +1,35 @@
+﻿@{
+}
+
+<form>
+    <div style="font-family: 'Product Sans', sans-serif !important;">
+        <p class="margin-0 fontweightbold fontsize20">Наименование мероприятия:</p>
+        <input type="text" class=" mrtop-8" id="name" value="" required placeholder="Квиз `Дружба народов`"/>
+
+        <p class="margin-0 fontweightbold fontsize20 mrtop-16">Описание:</p>
+        <textarea maxlength="255" class="mrtop-8" id="desc" required placeholder="В актовом зале гимназии был проведён квиз `Дружба народов`, приуроченный ко Дню народного единства."></textarea>
+
+        <p class="margin-0 fontweightbold fontsize20 mrtop-16">Дата проведения:</p>
+        <input type="datetime-local" class="mrtop-8" id="datetime" required />
+
+        <p class="margin-0 fontweightbold fontsize20 mrtop-16">Вместимость:</p>
+        <input type="number" class="mrtop-8" id="capacity" min="1" placeholder="20" required />
+
+        <p class="margin-0 fontweightbold fontsize20 mrtop-16">Тип мероприятия:</p>
+        <select id="evtype">
+            <option value="1" selected>Культурные мероприятия</option>
+            <option value="0">Спортивные соревнования</option>
+            <option value="2">Конференции и семинары</option>
+            <option value="3">Экскурсии</option>
+            <option value="4">День открытых дверей</option>
+            <option value="5">Выпускные вечера</option>
+        </select>
+
+        <p class="margin-0 fontweightbold fontsize20 mrtop-16">Фотография мероприятия:</p>
+        <input class="settinginput" id="photo" type="file" required/>
+
+        <div class="d-flex justify-content-center">
+            <input type="button" onclick="AddActivity(this.form.name.value, this.form.desc.value, this.form.datetime.value, this.form.capacity.value, this.form.evtype.value, this.form.photo.files[0], '@ViewBag.School.Id')" style="text-align: center;" value="Создать мероприятие" />
+        </div>
+    </div>
+</form>

@@ -1,0 +1,82 @@
+﻿@model ContextManager
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="~/css/style.css" />
+    <script src="~/js/script.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/luxon@3.4.4/build/global/luxon.min.js"></script>
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=16661aeb-383a-43c2-8d47-6f62dbe09a1b&lang=ru_RU"></script>
+</head>
+<body>
+    <div class="w-100 d-flex">
+        <div class="leftwhitebar"></div>
+        <div class="content">
+            @if (Model.CurrentUser == null)
+            {
+                <div class="header">
+                    <div class="companyname">
+                        <a href="/Home/Index" class="fontsize-24 fweight-bold txtnowrap">Event <span style="color: #7848F4;">Hive</span></a>
+                    </div>
+                    <div class="h-buttons">
+                        <a href="/Logon/Index" class="fontsize-18">Войти</a>
+                        <input type="button" value="Регистрация" class="mrleft-16 signupbutton btnhobert headerbutton" onclick="RedirectTo('/Logon/Registration')">
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="header">
+                    <div class="companyname">
+                        <a href="/Home/Index" class="fontsize-24 fweight-bold txtnowrap">Event <span style="color: #7848F4;">Hive</span></a>
+                    </div>
+                    <div class="h-buttons">
+                        @if (Model.CurrentUser.RoleId != 3)
+                        {
+                            <div class="headerschool">
+                                @if (Model.CurrentUser.RoleId == 2)
+                                {
+                                    <a href="/Activities/School?schoolid=@Model.Schools.Single(q => q.UserId == Model.CurrentUser.Id).Id" class="fontsize-18 hobert headertext">Мои мероприятия</a>
+                                }
+                                <a id="myaccount" href="/Profile/Index" class="mrleft-16 fontsize-18 hobert headertext">@Model.CurrentUser.Email</a>
+                            </div>
+                        }
+                        else
+                        {
+                            <a class="fontsize-18 cursor-default headertext">@Model.CurrentUser.Email</a>
+                        }
+                        <input type="button" value="Выйти" class="mrleft-16 signupbutton btnhobert headerbutton" onclick="Logoff();">
+                    </div>
+                </div>
+            }
+            @RenderBody()
+        </div>
+        <div class="rightwhitebar"></div>
+    </div>
+    <div class="w-100 foot">
+        <footer>
+            <div class="foot-content cursor-default">
+                <p class="fontsize-32 fweight-bold color-white" style="display: flex; justify-content: center;">Event&nbsp;<span style="color: #7848F4;">Hive</span></p>
+                <div style="display: flex; margin: 0 auto; justify-content: space-between; margin-top: 16px !important;" class="foottext">
+                    <a href="/Home/Index" class="color-white" style="width: min-content">Home</a>
+                    <p class="color-white" style="width: min-content">About</p>
+                    <p class="color-white" style="width: min-content; white-space: nowrap;">Get in touch</p>
+                    <p class="color-white" style="width: min-content">FAQs</p>
+                </div>
+                <hr class="mrtop-16">
+                <div class="d-flex" style="justify-content: space-between;">
+                    <p class="color-white">EventHive &copy; 2024</p>
+                    <div>
+                        <img src="~/reference/🔰 Type=vk-icon, 🌓 Dark=Off, 🌞 Light=On.png" alt="">
+                        <img src="~/reference/🔰 Type=telegram-icon, 🌓 Dark=Off, 🌞 Light=On.png" alt="">
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,22 @@
+﻿@{
+}
+
+<form>
+    <div style="font-family: 'Product Sans', sans-serif !important;">
+        <p class="margin-0 fontweightbold fontsize20">Наименование:</p>
+        <input type="text" class=" mrtop-8" id="schname" value="" required placeholder="Лицей №100" />
+
+        <p class="margin-0 fontweightbold fontsize20 mrtop-16">Электронная почта:</p>
+        <input type="text" class=" mrtop-8" id="schemail" value="" required placeholder="user@mail.ru" />
+
+        <p class="margin-0 fontweightbold fontsize20 mrtop-16">Описание:</p>
+        <textarea class="mrtop-8" id="schdesc" required placeholder="Лицей №100 – международная школа будущего, внедряющая инновационные технологии образования мирового уровня, интегрирующая лучшие советские и мировые тенденции в образовании."></textarea>
+
+        <p class="margin-0 fontweightbold fontsize20 mrtop-16">Фотография:</p>
+        <input class="settinginput" id="schphoto" type="file" required />
+
+        <div class="d-flex justify-content-center">
+            <input type="button" onclick="AddSchool(this.form.schname.value, this.form.schemail.value, this.form.schdesc.value, this.form.schphoto.files[0])" style="text-align: center;" value="Добавить школу" />
+        </div>
+    </div>
+</form>

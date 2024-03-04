@@ -1,0 +1,78 @@
+﻿@model ContextManager
+@{
+    var school = (School)ViewBag.School;
+    var events = (List<Event>)ViewBag.Events;
+}
+
+<form class="h-100">
+    <div style="width: 95%; margin: 0 auto" class="cursor-default">
+        <!--<p class="fweight-bold fontsize-18">Записи на мероприятия от @school.Name</p>-->
+        <div style="display: flex; align-items: center" class="mrtop-16">
+            <p class="mrright-16">Выберите мероприятиятие</p>
+            <select id="event" onchange="fillpage(this.form.event.value)">
+                <option value="" disabled selected>Выберите ваше мероприятие</option>
+                @foreach(var e in events)
+                {
+                    <option value="@e.Id">@e.Name</option>
+                }
+            </select>
+        </div>
+
+        <div id="usercontent" style="display: none;" class="mrtop-16">
+            <p id="labeluser"></p>
+            <table style="width: 100%" class="mrtop-8">
+                <thead>
+                    <tr style="background-color: #7848F4; color: white">
+                        <th>Id</th>
+                        <th>Email</th>
+                        <th>Фамилия</th>
+                        <th>Имя</th>
+                        <th>Отчество</th>
+                    </tr>
+                </thead>
+                <tbody style="text-align: center">
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+</form>
+
+<script>
+    function fillpage(evenyid) {
+        $.ajax({
+            type: "GET",
+            url: `/api/Academy/GetAllRegisteredUsersBySchoolEvent/${evenyid}`,
+            contentType: "application/json",
+            dataType: "json",
+            success: function (result) {
+                var tbody = document.querySelector("#usercontent table tbody");
+
+                tbody.innerHTML = '';
+
+                result.value.forEach(function (user) {
+                    var row = document.createElement("tr");
+
+                    row.innerHTML = "<td>" + user.id + "</td>" +
+                        "<td>" + user.email + "</td>" +
+                        "<td>" + user.lastName + "</td>" +
+                        "<td>" + user.firstName + "</td>" +
+                        "<td>" + user.middleName + "</td>";
+
+                    tbody.appendChild(row);
+                });
+
+                var elem = document.getElementById("usercontent");
+                elem.style.display = 'block';
+
+                var lbl = document.getElementById("labeluser");
+
+                var selectElement = document.getElementById("event");
+                var selectedIndex = selectElement.selectedIndex;
+                var selectedOption = selectElement.options[selectedIndex];
+
+                lbl.innerHTML = "Участники мероприятия " + selectedOption.text;
+            }
+        });
+    };
+</script>

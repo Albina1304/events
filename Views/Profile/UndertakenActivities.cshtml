@@ -1,0 +1,81 @@
+﻿@model ContextManager
+@{
+    string GetStars(int value)
+    {
+        switch (value)
+        {
+            case 1:
+                return "★";
+            case 2:
+                return "★★";
+            case 3:
+                return "★★★";
+            case 4:
+                return "★★★★";
+            case 5:
+                return "★★★★★";
+            default:
+                return "Don't have evaluation";
+        }
+    }
+    int maxDescriptionLength = 80;
+}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<div class="modal-background" id="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+@if (Model.CurrentUser == null)
+{
+    <span>Пользователь не авторизован!</span>
+}
+else
+{
+    if (ViewBag.IsHaveEvs == true)
+    {
+        foreach (var ev in ViewBag.MyEvents)
+        {
+            <div class="pr-item mrbottom-16">
+                <form class="mrtop-8 mrbottom-8">
+                    <div class="d-flex alignitems-center review-all">
+                        <img src="/eventphoto/@ev.Photo" alt="@ev.Name" class="profileevphoto"/>
+                        <div class="mrleft-16 w-70 pr-reviews-text">
+                            <p class="fweight-bold fontsize-16 cursor-pointer hobert" onclick="RedirectTo('/Activities/Activity?activityid=@ev.Id')">@ev.Name</p>
+                            @{
+                                string description = ev.Description;
+
+                                if (description.Length > maxDescriptionLength)
+                                {
+                                    description = description.Substring(0, maxDescriptionLength) + "...";
+                                }
+                            }
+                            <p class="mrtop-8">@description</p>
+                            <p style="font-style:italic" class="mrtop-8">@ev.DateTime.AddHours(3).ToString("dddd, d MMMM, HH:mm")</p>
+                            @if (Model.EventReviews.SingleOrDefault(q => q.EventId == ev.Id && q.UserId == Model.CurrentUser.Id) == null)
+                            {
+                                <input type="button" class="profilebutton mrtop-8 cursor-pointer btnhobert" value="Оставить отзыв" onclick="openModalAddReviewToEvent({ url: '/Activities/CreateReview', eventId: '@ev.Id' });" />
+                            }
+                            else
+                            {
+                                <div class="d-block mrtop-8">
+                                    <p class="d-block">Ваша оценка</p>
+                                    <p style="color: gold" class="fontsize-20">@GetStars(Model.EventReviews.Single(q => q.UserId == Model.CurrentUser.Id && q.EventId == ev.Id).Evaluation)</p>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </form>
+            </div>
+        }
+    }
+    if (ViewBag.IsHaveEvs == false)
+    {
+        <span class="cursor-default">Вы пока не участвовали в мероприятиях, скорее <a href="/Activities/Index">регистрируйтесь</a>!</span>
+    }
+
+}

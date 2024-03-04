@@ -1,0 +1,48 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EventHive - Регистрация</title>
+    <link rel="stylesheet" href="~/css/style.css">
+    <script src="~/js/script.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body class="overflowy-hidden">
+    <div class="w-100 d-flex">
+        <div class="logonleftbar">
+            <img src="~/reference/signin.png" alt="">
+        </div>
+        <div class="logonrightbar alignitems-center d-flex">
+            <form action="POST" class="logoncontainer">
+                <div class="textalign-center">
+                    <p class="fontsize-24 fweight-bold">Event <span style="color: #7848F4;">Hive</span></p>
+                    <p class="fontsize-28 fweight-bold mrtop-16">Зарегистрируйтесь в Event Hive</p>
+                </div>
+                <div class="mr0-auto" style="margin-top: 16px !important;">
+                    <p class="d-inline-block mrtop-16">АДРЕС ЭЛЕКТРОННОЙ ПОЧТЫ</p>
+                    <input type="email" id="email" placeholder="Введите ваш адрес электронной почты" class="logoninput mrtop-8">
+                    <p class="d-inline-block mrtop-16">ПАРОЛЬ</p>
+                    <input type="password" id="password" placeholder="Введите ваш пароль" class="logoninput mrtop-8">
+                    <p class="d-inline-block mrtop-16">ПОДТВЕРЖДЕНИЕ ПАРОЛЯ</p>
+                    <input type="password" id="repeatpassword" placeholder="Подтвердите ваш пароль" class="logoninput mrtop-8">
+                </div>
+                <div class="mr0-auto" style="width: 40%;">
+                    <input type="button" value="Продолжить" class="logonbutton" onclick="Register(this.form.email.value, this.form.password.value, this.form.repeatpassword.value, '@DateTime.Now')">
+                </div>
+                <div style="text-align: center" class="mrtop-16">
+                    <span>Войти в свой профиль?&#32;<a href="/Logon/Index">Авторизация</a></span>
+                </div>
+                <div style="text-align: center" class="mrtop-8">
+                    <a href="/Home/Index">Продолжить без регистрации</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

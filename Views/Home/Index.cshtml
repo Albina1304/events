@@ -1,0 +1,88 @@
+﻿@model ContextManager
+@{
+    var evs = (List<Event>)ViewBag.Events;
+    var citiesGrouped = Model.Cities.OrderBy(q => q.RegionId).GroupBy(c => c.RegionId);
+}
+
+<div class="filters">
+    <img src="~/reference/unsplash_F2KRf_QfCqw.png" class="mainphoto" style="z-index: 1;">
+    <div class="f-back alignitems-center">
+        <div style="width: 29%; margin-right: 1%; margin-left: 1%;">
+            <p class="color-white fontsize-16 mrbottom-8">В поиске</p>
+            <select name="type" id="evtype" class="searchinput">
+                <option value="" disabled selected>Выберите тип мероприятия</option>
+                <option value="1">Культурные мероприятия</option>
+                <option value="0">Спортивные соревнования</option>
+                <option value="2">Конференции и семинары</option>
+                <option value="3">Экскурсии</option>
+                <option value="4">День открытых дверей</option>
+                <option value="5">Выпускные вечера</option>
+            </select>
+        </div>
+        <div style="width: 29%; margin-right: 1%; margin-left: 1%;">
+            <p class="color-white fontsize-16 mrbottom-8">Местоположение</p>
+            <select name="city" id="evcity" class="searchinput">
+                <!option value="0" disabled selected>Выберите город</!option>
+                @foreach (var group in citiesGrouped)
+                {
+                    var regionName = Model.Regions.Single(r => r.Id == group.Key).Name;
+                    <optgroup label="@regionName">
+                        @foreach (var city in group)
+                        {
+                            <option value="@city.Id">@city.Name</option>
+                        }
+                    </optgroup>
+                }
+            </select>
+        </div>
+        <div style="width: 29%; margin-right: 1%; margin-left: 1%;">
+            <p class="color-white fontsize-16 mrbottom-8">Когда</p>
+            <input type="date" id="evdate" class="searchinput" placeholder="Выберите дату" style="font-family: 'Product Sans', sans-serif" />
+        </div>
+        <div style="width: 5%; margin-right: 1%; margin-left: 1%;">
+            <div class="searchbutton" onclick="SearchEvents()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: flex; margin: 0 auto">
+                    <path d="M11 19C15.4183 19 19 15.4183 19 11C19 6.58172 15.4183 3 11 3C6.58172 3 3 6.58172 3 11C3 15.4183 6.58172 19 11 19Z" stroke="#F8F8FA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M20.9999 20.9999L16.6499 16.6499" stroke="#F8F8FA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="events">
+    <p class="fweight-bold fontsize-20 cursor-default">Предстоящие <span style="color: #7848F4;">мероприятия</span></p>
+    <div class="m-cards mrtop-16">
+        @if (evs != null)
+        {
+            foreach (var ev in evs)
+            {
+                <div class="oneofcard cursor-pointer hover-box-shadow" onclick="RedirectTo('/Activities/Activity?activityid=@ev.Id')"
+                     title="@ev.Name - @ev.Description - @ev.DateTime.AddHours(3).ToString("dddd, d MMMM, HH:mm")">
+                    <img src="~/eventphoto/@ev.Photo" alt="@ev.Name" class="oneofcardphoto">
+                    <p class="fontsize-14 fweight-bold mrtop-8">@ev.Name</p>
+                    <p class="fontsize-14 mrtop-8" style="color: #7848F4;">@ev.DateTime.AddHours(3).ToString("dddd, d MMMM, HH:mm")</p>
+                </div>
+            }
+        }
+    </div>
+
+    <div style="display: flex; justify-content: center;" class="mrtop-16">
+        <input type="button" class="signupbutton btnhobert" value="Больше.." onclick="RedirectTo('/Activities/Index')">
+    </div>
+</div>
+
+<div class="events">
+    <p class="fweight-bold fontsize-20 cursor-default">Популярные <span style="color: #3818D9;">школы</span></p>
+    <div class="m-cards mrtop-16">
+        @foreach (var item in ViewBag.PopularSchools)
+        {
+            <div class="oneofcard cursor-pointer hover-box-shadow" onclick="RedirectTo('/Schools/School?schoolid=@item.School.Id')"
+                 title="@item.School.Name - @item.School.Description - @(Model.Regions.Single(q => q.Id == Model.Cities.Single(q => q.Id == item.School.CityId).RegionId).Name + ", " + Model.Cities.Single(q => q.Id == item.School.CityId).Name)">
+                <img src="~/schoolphoto/@item.School.Photo" class="oneofcardphoto" alt="@item.School.Name">
+                <p class="fontsize-14 fweight-bold mrtop-8">@item.School.Name</p>
+                <p class="fontsize-14 mrtop-8">@(Model.Regions.Single(q => q.Id == Model.Cities.Single(q => q.Id == item.School.CityId).RegionId).Name + ", " + Model.Cities.Single(q => q.Id == item.School.CityId).Name)</p>
+            </div>
+        }
+    </div>
+</div>

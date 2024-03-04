@@ -1,0 +1,55 @@
+﻿@model ContextManager
+@{
+    
+}
+
+@if (Model.CurrentUser == null)
+{
+    <span>Пользователь не авторизован!</span>
+}
+else
+{
+    <form class="pr-item">
+        <div id="displaysettings">
+            <div class="d-flex w-100 alignitems-center">
+                <p class="mrright-16 w-30 fweight-bold">Фамилия</p>
+                <p class="w-70">@Model.CurrentUser.LastName</p>
+            </div>
+
+            <div class="d-flex w-100 alignitems-center mrtop-16">
+                <p class="mrright-16 w-30 fweight-bold">Имя</p>
+                <p class="w-70">@Model.CurrentUser.FirstName</p>
+            </div>
+
+            <div class="d-flex w-100 alignitems-center mrtop-16">
+                <p class="mrright-16 w-30 fweight-bold">Отчество</p>
+                <p class="w-70">@Model.CurrentUser.MiddleName</p>
+            </div>
+
+            <a class="d-block cursor-pointer pr-button btnhobert mrtop-16" onclick="switchBetweenEditing('displaysettings', 'editsettings');">Редактировать</a>
+        </div>
+        <div id="editsettings">
+            <div class="d-flex alignitems-center" onclick="switchBetweenEditing('editsettings', 'displaysettings');">
+                <img src="/reference/Vector (Stroke) color.png" class="mrright-8" />
+                <a class="cursor-pointer color-7848F4">Вернуться к предпросмотру</a>
+            </div>
+
+            <div class="d-flex w-100 alignitems-center mrtop-16">
+                <p class="w-30">Фамилия</p>
+                <input class="settinginput" id="lastname" type="text" value="@Model.CurrentUser.LastName" />
+            </div>
+
+            <div class="d-flex w-100 alignitems-center mrtop-16">
+                <p class="w-30">Имя</p>
+                <input class="settinginput" id="firstname" type="text" value="@Model.CurrentUser.FirstName" />
+            </div>
+
+            <div class="d-flex w-100 alignitems-center mrtop-16">
+                <p class="w-30">Отчество</p>
+                <input class="settinginput" id="middlename" type="text" value="@Model.CurrentUser.MiddleName" />
+            </div>
+
+            <input type="button" class="settingbutton mrtop-16 btnhobert" value="Сохранить" onclick="UpdatePersonalSetting('@Model.CurrentUser.Id', this.form.lastname.value, this.form.firstname.value, this.form.middlename.value)" />
+        </div>
+    </form>
+}

@@ -1,0 +1,60 @@
+﻿@model ContextManager
+@{
+    
+}
+
+@if (Model.CurrentUser != null && Model.CurrentUser.RoleId == 1)
+{
+    <div class="pr-all h-100">
+        <div class="pr-left">
+            <a class="d-block fweight-bold fontsize-18 cursor-pointer" id="labelLogonSetting" onclick="loadPartialView('LogonSetting')">Параметры входа</a>
+            <a class="d-block fweight-bold fontsize-18 mrtop-8 cursor-pointer" id="labelPersonalSetting" onclick="loadPartialView('PersonalSetting')">Личные данные</a>
+            <a class="d-block fweight-bold fontsize-18 mrtop-8 cursor-pointer" id="labelUndertakenActivities" onclick="loadPartialView('UndertakenActivities')">Мероприятия</a>
+        </div>
+        <div class="pr-right" id="partialViewContainer">
+
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            // Загружаем частичное представление "LogonSetting" при загрузке страницы
+            loadDefaultPartialView();
+        });
+
+        function loadDefaultPartialView() {
+            $.get("/Profile/GetLogonSettingPartial", function (data) {
+            $("#partialViewContainer").html(data);
+            }).then(() => {
+            document.getElementById('labelLogonSetting').style.color = '#7848F4';
+            });
+        }
+    </script>
+}
+else if (Model.CurrentUser != null && Model.CurrentUser.RoleId == 2)
+{
+    <div class="pr-all h-100">
+        <div class="pr-left">
+            <a class="d-block fweight-bold fontsize-18 cursor-pointer" id="labelCommonSetting" onclick="loadPartialView('CommonSetting')">Общие настройки</a>
+            <a class="d-block fweight-bold fontsize-18 mrtop-8 cursor-pointer" id="labelLocationSetting" onclick="loadPartialView('LocationSetting')">Расположение</a>
+        </div>
+
+        <div class="pr-right" id="partialViewContainer">
+
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            loadDefaultPartialView();
+        });
+
+        function loadDefaultPartialView(model) {
+            $.get(`/Profile/GetCommonSettingPartial`, function (data) {
+                $("#partialViewContainer").html(data);
+            }).then(() => {
+                document.getElementById('labelCommonSetting').style.color = '#7848F4';
+            });
+        }
+    </script>
+}

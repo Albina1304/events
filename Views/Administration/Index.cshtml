@@ -1,0 +1,178 @@
+﻿@model ContextManager
+@{
+    var events = (List<Event>)ViewBag.Events;
+    var schools = (List<School>)ViewBag.Schools;
+    var regions = (List<Region>)ViewBag.Regions;
+    var cities = (List<City>)ViewBag.Cities;
+}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<div class="modal-background" id="modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="h-100 fdown1100">
+    <div class="d-flex alignitems-center juscon-start fontsize-18" style="width: 95%; margin: 0 auto">
+        <a id="labeladminschools" class="mrright-16 color-7848F4 cursor-pointer" onclick="switchBetweenAdmitions('adminreviews', 'adminevents', 'adminusers', 'adminschools')">Школы</a>
+        <a id="labeladminusers" class="mrright-16 cursor-pointer" onclick="switchBetweenAdmitions('adminreviews', 'adminevents', 'adminschools', 'adminusers')">Пользователи</a>
+        <a id="labeladminevents" class="mrright-16 cursor-pointer" onclick="switchBetweenAdmitions('adminreviews', 'adminschools', 'adminusers', 'adminevents')">Мероприятия</a>
+        <a id="labeladminreviews" class="mrright-16 cursor-pointer" onclick="switchBetweenAdmitions('adminevents', 'adminschools', 'adminusers', 'adminreviews')">Отзывы</a>
+    </div>
+
+    <div id="adminusers" class="mrtop-24 cursor-default" style="display: none">
+        <table style="width: 100%">
+            <thead>
+                <tr style="background-color: #7848F4; color: white">
+                    <th>Id</th>
+                    <th>Email</th>
+                    <th>Фамилия</th>
+                    <th>Имя</th>
+                    <th>Отчество</th>
+                    <th>Действие</th>
+                </tr>
+            </thead>
+            <tbody style="text-align: center">
+                @foreach(var user in Model.Users.Where(q => q.RoleId == 1).OrderBy(q => q.Id).ToList())
+                {
+                    <tr>
+                        <td>@user.Id</td>
+                        <td>@user.Email</td>
+                        <td>@user.LastName</td>
+                        <td>@user.FirstName</td>
+                        <td>@user.MiddleName</td>
+                        <td>
+                            @if (user.IsDeleted == false)
+                            {
+                                <a class="cursor-pointer hobert" onclick="BlockUser('@user.Id')">Заблокировать</a>
+                            }
+                            else
+                            {
+                                <a class="cursor-pointer hobert" onclick="UnblockUser('@user.Id')">Разблокировать</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div id="adminreviews" class="mrtop-24 cursor-default" style="display: none">
+        <table style="width: 100%">
+            <thead>
+                <tr style="background-color: #7848F4; color: white">
+                    <th>Id</th>
+                    <th>Оценка</th>
+                    <th>Описание</th>
+                    <th>Пользователь</th>
+                    <th>Мероприятие</th>
+                    <th>Действие</th>
+                </tr>
+            </thead>
+            <tbody style="text-align: center">
+                @foreach (var review in ViewBag.EventReviews)
+                {
+                    <tr>
+                        <td>@review.Id</td>
+                        <td>@review.Evaluation</td>
+                        <td>@review.Description</td>
+                        <td>@Model.Users.First(q => q.Id == review.UserId).Email</td>
+                        <td>@events.First(q => q.Id == review.EventId).Name</td>
+                        <td>
+                            <a class="cursor-pointer hobert" onclick="DeleteReview('@review.Id')">Удалить</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div id="adminevents" class="mrtop-24 cursor-default" style="display: none">
+        <table style="width: 100%">
+            <thead>
+                <tr style="background-color: #7848F4; color: white">
+                    <th>Id</th>
+                    <th>Наименование</th>
+                    <th>Описание</th>
+                    <th>Тип</th>
+                    <th>Школа</th>
+                    <th>Действие</th>
+                </tr>
+            </thead>
+            <tbody style="text-align: center">
+                @foreach (var ev in events)
+                {
+                    <tr>
+                        <td>@ev.Id</td>
+                        <td>@ev.Name</td>
+                        <td>@ev.Description</td>
+                        <td>@Model.ConvertEvTypeToStr(ev.EventType)</td>
+                        <td>@schools.First(q => q.Id == ev.SchoolId).Name</td>
+                        <td>
+                            @if(ev.IsDeleted == false)
+                            {
+                                <a class="cursor-pointer hobert" onclick="BlockEvent('@ev.Id')">Заблокировать</a>
+                            }
+                            else
+                            {
+                                <a class="cursor-pointer hobert" onclick="UnblockEvent('@ev.Id')">Разблокировать</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div id="adminschools" class="mrtop-24 cursor-default">
+        <div style="width: 95%; margin: 0 auto;">
+            <a class="hobert cursor-pointer" onclick="openModalCreateSchool({ url: '/Administration/CreateSchool', userId: '@Model.CurrentUser.Id'})">Добавить школу</a>
+        </div>
+        <table style="width: 100%" class="mrtop-16">
+            <thead>
+                <tr style="background-color: #7848F4; color: white">
+                    <th>Id</th>
+                    <th>Наименование</th>
+                    <th>Описание</th>
+                    <th>Email</th>
+                    <th>Адрес</th>
+                    <th>Действие</th>
+                </tr>
+            </thead>
+            <tbody style="text-align: center">
+                @foreach (var school in schools)
+                {
+                    <tr>
+                        <td>@school.Id</td>
+                        <td>@school.Name</td>
+                        <td>@school.Description</td>
+                        <td>@Model.Users.First(q => q.Id == school.UserId).Email</td>
+                        @if(school.CityId == null)
+                        {
+                            <td></td>
+                        }
+                        else
+                        {
+                            <td>@(regions.First(q => q.Id == cities.First(q => q.Id == school.CityId).RegionId).Name + ", " + cities.First(q => q.Id == school.CityId).Name + ", " + school.Street + ", " + school.House)</td>
+                        }
+                        <td>
+                            @if (school.IsDeleted == false)
+                            {
+                                <a class="cursor-pointer hobert" onclick="BlockSchool('@school.Id')">Заблокировать</a>
+                            }
+                            else
+                            {
+                                <a class="cursor-pointer hobert" onclick="UnblockSchool('@school.Id')">Разблокировать</a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

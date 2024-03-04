@@ -1,0 +1,30 @@
+﻿@{
+    var ev = (Event)ViewBag.Event;
+}
+
+<form>
+    <div style="font-family: 'Product Sans', sans-serif !important;">
+        <p class="margin-0 fontweightbold fontsize20">Наименование мероприятия:</p>
+        <input type="text" class=" mrtop-8" id="name" value="@ev.Name" required placeholder="Квиз `Дружба народов`" />
+
+        <p class="margin-0 fontweightbold fontsize20 mrtop-16">Описание:</p>
+        <textarea class="mrtop-8" id="desc" required placeholder="В актовом зале гимназии был проведён квиз `Дружба народов`, приуроченный ко Дню народного единства.">@ev.Description</textarea>
+
+        <p class="margin-0 fontweightbold fontsize20 mrtop-16">Дата проведения:</p>
+        <input type="datetime-local" class="mrtop-8" id="datetime" value="@ev.DateTime.ToString("yyyy-MM-ddTHH:mm")" required />
+
+        <p class="margin-0 fontweightbold fontsize20 mrtop-16">Тип мероприятия:</p>
+        <select id="evtype">
+            <!option value="1" @(ev.EventType == EventType.Культурные1мероприятия ? "selected" : "")>Культурные мероприятия</!option>
+            <!option value="0" @(ev.EventType == EventType.Спортивные1соревнования ? "selected" : "")>Спортивные соревнования</!option>
+            <!option value="2" @(ev.EventType == EventType.Конференции1и1семинары ? "selected" : "")>Конференции и семинары</!option>
+            <!option value="3" @(ev.EventType == EventType.Экскурсии ? "selected" : "")>Экскурсии</!option>
+            <!option value="4" @(ev.EventType == EventType.День1открытых1дверей ? "selected" : "")>День открытых дверей</!option>
+            <!option value="5" @(ev.EventType == EventType.Выпускные1вечера ? "selected" : "")>Выпускные вечера</!option>
+        </select>
+
+        <div class="d-flex justify-content-center">
+            <input type="button" onclick="UpdateActivity(this.form.name.value, this.form.desc.value, this.form.datetime.value, this.form.evtype.value, '@ev.Id')" style="text-align: center;" value="Редактировать мероприятие" />
+        </div>
+    </div>
+</form>

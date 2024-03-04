@@ -1,0 +1,79 @@
+﻿@model ContextManager
+@{
+    School school = ViewBag.School;
+}
+
+@if (Model.CurrentUser == null)
+{
+    <span>Пользователь не авторизован!</span>
+}
+else
+{
+    <div class="pr-item">
+        <div id="displaysettings">
+            <div class="d-flex">
+                <a href="/Schools/School?schoolid=@school.Id" class="cursor-pointer hobert mrright-16">Страница школы</a>
+            </div>
+
+            @if (!string.IsNullOrEmpty(school.Photo))
+            {
+                <img src="/schoolphoto/@school.Photo" class="schoolphoto mrtop-16" />
+            }
+
+            <div class="d-flex w-100  mrtop-16">
+                <p class="mrright-16 w-30 fweight-bold">Наименование</p>
+                <p class="w-70">@school.Name</p>
+            </div>
+
+            <div class="d-flex w-100 mrtop-16">
+                <p class="mrright-16 w-30 fweight-bold">Описание</p>
+                <p class="w-70">@school.Description</p>
+            </div>
+            <a class="d-block cursor-pointer pr-button btnhobert mrtop-16" onclick="switchBetweenEditing('displaysettings', 'editsettings');">Редактировать информацию о школе</a>
+        </div>
+        <div id="editsettings">
+            <div class="d-flex alignitems-center" onclick="switchBetweenEditing('editsettings', 'displaysettings');">
+                <img src="/reference/Vector (Stroke) color.png" class="mrright-8" />
+                <a class="cursor-pointer color-7848F4">Вернуться к предпросмотру</a>
+            </div>
+            <form id="photoForm">
+                @if (!string.IsNullOrEmpty(school.Photo))
+                {
+                    <img src="/schoolphoto/@school.Photo" class="schoolphoto mrtop-16"/>
+                }
+
+                @if (school != null)
+                {
+                    <div class="d-flex w-100 alignitems-center mrtop-16">
+                        <p class="mrright-16 w-30">Наименование</p>
+                        <input class="settinginput" id="name" type="text" value="@school.Name" />
+                    </div>
+
+                    <div class="d-flex w-100 alignitems-center mrtop-16">
+                        <p class="mrright-16 w-30">Описание</p>
+                        <textarea class="settinginput" id="desc" style="height: 50px; min-width: 70%; font-family: 'Product Sans', sans-serif;">@school.Description</textarea>
+                    </div>
+                }
+                else
+                {
+                    <div class="d-flex w-100 alignitems-center mrtop-16">
+                        <p class="mrright-16 w-30">Наименование</p>
+                        <input class="settinginput" id="name" type="text" />
+                    </div>
+
+                    <div class="d-flex w-100 alignitems-center mrtop-16">
+                        <p class="mrright-16 w-30">Описание</p>
+                        <textarea class="settinginput" id="desc" style="height: 100px; min-width: 70%; width: 70%; font-family: 'Product Sans', sans-serif;" maxlength="255"></textarea>
+                    </div>
+                }
+
+                <div class="d-flex w-100 alignitems-center mrtop-16">
+                    <p class="mrright-16 w-30">Фотография</p>
+                    <input class="settinginput" id="photo" type="file" />
+                </div>
+
+                <input type="button" class="settingbutton mrtop-16 btnhobert" value="Сохранить" onclick="saveSchoolPhoto('@school.Id', this.form.photo.files[0], this.form.name.value, this.form.desc.value)" />
+            </form>
+        </div>
+    </div>
+}
