@@ -30,10 +30,12 @@
 
 <div class="sch-desc cursor-default">
     <p class="fontsize-24 fweight-bold">@ViewBag.School.Name</p>
-    <p class="fontsize-16 mrtop-16">Местоположение: @ViewBag.SchoolAddress</p>
-    <p class="fontsize-16 mrtop-16">
-        @ViewBag.School.Description
-    </p>
+    <div class="fontsize-16 mrtop-16">
+        <p>Местоположение: @ViewBag.SchoolAddress</p>
+        <p class="mrtop-16">
+            @ViewBag.School.Description
+        </p>
+    </div>
 
     @if (ev.Length != 0)
     {

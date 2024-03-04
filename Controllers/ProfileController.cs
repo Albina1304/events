@@ -157,10 +157,8 @@ namespace events.Controllers
                 School school = _context.Schools.Single(q => q.UserId == int.Parse(userId));
                 ViewBag.School = school;
 
-                var city = _context.Cities.Single(q => q.Id == school.CityId);
-                var region = _context.Regions.Single(q => q.Id == city.RegionId);
-                ViewBag.Region = region.Name;
-                ViewBag.City = city.Name;
+                ViewBag.City = _context.Cities.Single(q => q.Id == school.CityId);
+                ViewBag.Region = _context.Regions.Single(q => q.Id == (City)ViewBag.City.RegionId);
 
                 var model = new ContextManager { CurrentUser = _context.Users.SingleOrDefault(m => m.Id == int.Parse(userId)), Users = [.. _context.Users], Cities = [.. _context.Cities], Regions = [.. _context.Regions], Schools = [.. _context.Schools] };
 

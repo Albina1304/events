@@ -64,7 +64,7 @@ namespace events.Controllers
 		/// <param name="photo"></param>
 		/// <returns></returns>
         [HttpPost("Create/{schoolid}/{name}/{description}/{dateTime}/{capacity}/{eventtype}")]
-		public async Task<IActionResult> Create(int schoolid, string name, string description, DateTime dateTime, int capacity, int eventtype, IFormFile photo)
+		public async Task<IActionResult> Create(Event even, IFormFile photo)
 		{
             if (photo == null || photo.Length == 0)
             {

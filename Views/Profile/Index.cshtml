@@ -6,10 +6,10 @@
 @if (Model.CurrentUser != null && Model.CurrentUser.RoleId == 1)
 {
     <div class="pr-all h-100">
-        <div class="pr-left">
-            <a class="d-block fweight-bold fontsize-18 cursor-pointer" id="labelLogonSetting" onclick="loadPartialView('LogonSetting')">Параметры входа</a>
-            <a class="d-block fweight-bold fontsize-18 mrtop-8 cursor-pointer" id="labelPersonalSetting" onclick="loadPartialView('PersonalSetting')">Личные данные</a>
-            <a class="d-block fweight-bold fontsize-18 mrtop-8 cursor-pointer" id="labelUndertakenActivities" onclick="loadPartialView('UndertakenActivities')">Мероприятия</a>
+        <div class="pr-left сursor-pointer fweight-bold fontsize-18">
+            <a class="d-block" id="labelLogonSetting" onclick="loadPartialView('LogonSetting')">Параметры входа</a>
+            <a class="d-block mrtop-8" id="labelPersonalSetting" onclick="loadPartialView('PersonalSetting')">Личные данные</a>
+            <a class="d-block mrtop-8" id="labelUndertakenActivities" onclick="loadPartialView('UndertakenActivities')">Мероприятия</a>
         </div>
         <div class="pr-right" id="partialViewContainer">
 

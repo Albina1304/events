@@ -24,15 +24,15 @@ namespace events.Controllers
 		/// <param name="description"></param>
 		/// <returns></returns>
 		[HttpPost("AddEventReview/{userid}/{eventid}/{evaluation}/{description}")]
-		public IActionResult AddEventReview(int userid, int eventid, int evaluation, string description)
+		public IActionResult AddEventReview(EventReview eventReview)
 		{
 			EventReview eventReview = new EventReview()
 			{
-				Evaluation = evaluation,
-				Description = description,
-				EventId = eventid,
-				UserId = userid
-			};
+				Evaluation = eventReview.Evaluation,
+				Description = eventReview.Description,
+				EventId = eventReview.EventId,
+				UserId = eventReview.UserId
+            };
 			_context.EventReviews.Add(eventReview);
 			_context.SaveChanges();
 

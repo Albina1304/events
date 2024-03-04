@@ -27,11 +27,10 @@ namespace events.Controllers
                 ViewBag.EventReviews = _context.EventReviews.OrderBy(q => q.Id).ToList();
                 ViewBag.Events = _context.Events.OrderBy(q => q.Id).ToList();
 
-                ViewBag.Schools = _context.Schools.OrderBy(q => q.Id).ToList();
                 ViewBag.Regions = _context.Regions.OrderBy(q => q.Id).ToList();
                 ViewBag.Cities = _context.Cities.OrderBy(q => q.Id).ToList();
 
-                var model = new ContextManager { CurrentUser = _context.Users.SingleOrDefault(m => m.Id == int.Parse(userId)), Users = [.. _context.Users] };
+                var model = new ContextManager { CurrentUser = _context.Users.SingleOrDefault(m => m.Id == int.Parse(userId)), Users = [.. _context.Users], Schools = _context.Schools.OrderBy(q => q.Id).ToList() };
 
                 if (model.CurrentUser.RoleId == 3)
                     return View(model);

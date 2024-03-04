@@ -35,13 +35,10 @@ namespace events.Controllers
                     {
                         var school = _context.Schools.Single(q => q.Id == ev.SchoolId);
 
-                        ViewBag.SchoolName = school.Name;
-                        ViewBag.SchoolAddress = _context.Regions.Single(q => q.Id == _context.Cities.Single(q => q.Id == school.CityId).RegionId).Name + ", " + _context.Cities.Single(q => q.Id == school.CityId).Name + ", " + school.Street + ", " + school.House;
-                        ViewBag.SchoolEmail = model.Users.First(q => q.Id == school.UserId).Email;
+                        ViewBag.School = school;
                         ViewBag.Event = ev;
                         ViewBag.EventReviews = _context.EventReviews.Where(q => q.EventId == ev.Id).ToList();
 
-                        ViewBag.SchoolId = school.Id;
 
                         if (ev.DateTime > DateTime.Now.ToLocalTime())
                         {
